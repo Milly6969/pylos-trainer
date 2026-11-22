@@ -134,7 +134,7 @@ body[data-board-theme="wood"] .ball.white{
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="64x64" href="./icons/favicon-64.png">
 <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
-<script src="./firebase-config.js"></script>
+<script src="./firebase-config.js?v=20261122-config-fix"></script>
 </head><body><main class="wrap"><header class="top"><div><div class="kicker">THE PYRAMID STRATEGY GAME</div><div class="brand">PYLOS <span style="font:italic 18px Georgia;color:#bdc7b9;letter-spacing:0">trainer</span></div></div><span class="pill">Offline play · online rooms optional</span></header><div class="layout"><section class="panel arena"><div class="opening-start"><button class="btn" id="openingOpenBtn">▦ Opening Explorer</button><span class="muted" style="font-size:12px">Study the Wall, Broken Symmetry and Square.</span></div><div class="analysis-banner" id="analysisBanner"><div class="row"><strong>Analysis Board · exploring a variation</strong><button class="btn primary" id="analysisExitBtn">← Return to live game</button></div><p>This is a separate copy of the game position. Make moves for both colours, undo one move at a time, or reset the variation. Your actual game is unchanged.</p><div class="row"><button class="btn" id="analysisResetBtn">↺ Reset variation</button><span class="pill" id="analysisDepth">0 exploratory moves</span></div>
 <div class="opening-explorer" id="openingExplorerPanel">
 <h4>Opening Position Explorer</h4>
@@ -560,7 +560,9 @@ let onlineLatest=null;
 async function onlineConnect(){
  if(!navigator.onLine)throw Error('This device is offline. Connect to the internet first.');
  if(location.protocol==='file:')throw Error('Online play requires the game to be hosted on HTTPS (not opened as a local file).');
- const config=JSON.parse($('firebaseConfig').value);
+ const rawConfig=$('firebaseConfig').value.trim();
+ if(!rawConfig)throw Error('Firebase configuration is not loaded. Refresh the website after the deployment finishes.');
+ let config;try{config=JSON.parse(rawConfig)}catch(e){throw Error('Firebase configuration is incomplete or invalid. Reload the page; if needed check docs/firebase-config.js on GitHub.')}
  if(!config.apiKey||!config.projectId||!config.appId||!config.databaseURL)throw Error('Firebase config needs apiKey, projectId, appId and databaseURL.');
  if(!onlineSdk){
   const [app,auth,database]=await Promise.all([
