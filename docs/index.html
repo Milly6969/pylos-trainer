@@ -1,0 +1,678 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PYLOS • Strategy Trainer</title><style>
+:root{color-scheme:dark;--bg:#101b19;--panel:#1b2a27;--rim:#344942;--fg:#f3ede0;--sub:#9db0a4;--gold:#dcb878;--green:#80c9ad}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 48% 0%,#2d4037,#101b19 68%);color:var(--fg);font:15px/1.45 system-ui,Segoe UI,sans-serif;min-height:100vh}.wrap{max-width:1240px;margin:auto;padding:30px 20px 55px}.top{display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap}.brand{font:700 42px/1 Georgia,serif;letter-spacing:.12em;color:#efdbb7}.kicker{font-size:11px;letter-spacing:.22em;color:var(--gold);text-transform:uppercase}.muted{color:var(--sub)}.layout{display:grid;grid-template-columns:minmax(0,1fr) 315px;gap:20px;margin-top:24px}.panel{background:#1b2a27dd;border:1px solid #48605280;border-radius:18px;box-shadow:0 20px 50px #0002}.arena{padding:26px}.settings{padding:20px}.status{text-align:center;margin-bottom:17px;min-height:58px}.status strong{display:block;font:25px Georgia,serif}.status small{color:var(--sub)}.tier-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:center;justify-items:center}.tier-wrap{width:100%;max-width:330px;text-align:center}.tier-label{font-size:11px;color:var(--gold);letter-spacing:.16em;text-transform:uppercase;margin:0 0 9px}.board{display:grid;grid-template-columns:repeat(var(--n),1fr);gap:5px;width:min(100%,var(--size));aspect-ratio:1;padding:10px;background:linear-gradient(145deg,#b68b5b,#6e4f35);border:6px solid #5b432f;border-radius:14px;box-shadow:inset 0 0 2px 2px #dfb98390,0 10px 17px #0005;margin:auto}.hole{border:0;border-radius:50%;position:relative;aspect-ratio:1;min-width:0;min-height:0;background:radial-gradient(circle at 55% 65%,#31261d,#503625 68%,#8d6948 86%,#cea575 98%);box-shadow:inset 1px 3px 6px #140f0b9c;cursor:pointer;padding:0;transition:transform .12s,outline .12s}.hole:hover{transform:scale(1.06)}.hole:focus-visible{outline:3px solid white;outline-offset:2px}.hole.white:before,.hole.black:before{content:'';position:absolute;inset:-1px;border-radius:50%;box-shadow:0 3px 5px #0007}.hole.white:before{background:radial-gradient(circle at 34% 24%,#fffef4 0,#f7ead1 30%,#c1a983 74%,#887052 100%)}.hole.black:before{background:radial-gradient(circle at 31% 20%,#89938e 0%,#3a4543 30%,#111e1d 77%,#091010 100%)}.hole.possible{outline:3px solid #89dcc0;outline-offset:-3px}.hole.possible:after{content:'';position:absolute;inset:32%;background:#9de8cbab;border-radius:50%}.hole.reclaim{outline:3px solid #e7be7b;outline-offset:-2px}.hole.selected{outline:3px solid #eee;outline-offset:2px}.hole.hint{outline:4px solid #f5cc75;outline-offset:1px}.hole:disabled{cursor:default}.reserves{display:flex;justify-content:space-between;gap:12px;margin:21px 0}.reserve{display:flex;align-items:center;gap:9px;padding:13px;border:1px solid #ffffff16;border-radius:12px;flex:1;background:#ffffff06}.reserve.active{border-color:var(--green);background:#22483c}.ball{display:inline-block;width:23px;height:23px;flex:none;border-radius:100%}.ball.white{background:radial-gradient(circle at 30% 25%,white,#e6d2ac 72%,#947754)}.ball.black{background:radial-gradient(circle at 30% 23%,#8a9892,#26332f 65%,#090e0d)}.count{font-size:23px;font-weight:700;margin-left:auto}.action-note{background:#263e35;padding:12px;border-radius:10px;color:#d4e8dd;font-size:13px;min-height:46px}.row{display:flex;gap:9px;flex-wrap:wrap}.btn{background:#32463e;border:1px solid #5b7767;color:#f3eee3;padding:10px 14px;border-radius:9px;cursor:pointer;font-weight:600;transition:.15s}.btn:hover:not(:disabled){background:#426153}.btn.primary{background:#d8b478;color:#17231d;border-color:#d8b478}.btn:disabled{opacity:.4;cursor:not-allowed}.btn.toggled{background:#447660;border-color:#96d7bc}select{width:100%;color:var(--fg);background:#283d35;border:1px solid #597065;border-radius:9px;padding:11px;font-size:14px}label.setting{font-size:12px;color:var(--sub);display:block;margin:17px 0 7px}.divider{height:1px;background:#ffffff15;margin:19px 0}h3{font:20px Georgia,serif;margin:0 0 12px}.history{max-height:195px;overflow:auto;font-size:12px;color:#d1dacc}.history div{padding:6px 2px;border-bottom:1px solid #ffffff12}.rules{font-size:13px;color:#c8d6ce}.rules p{margin:9px 0}.footer{margin-top:20px;font-size:12px;color:#91a49a}.pill{font-size:11px;border:1px solid #6b8b7a;border-radius:99px;padding:3px 9px;color:#b3dbc6}@media(max-width:900px){.layout{grid-template-columns:1fr}.settings{display:grid;grid-template-columns:1fr 1fr;gap:0 20px}.settings>.divider,.settings>.history-group,.settings>.rules-group{grid-column:1/-1}}@media(max-width:520px){.wrap{padding:18px 10px}.brand{font-size:30px}.arena{padding:15px}.tier-grid{gap:12px}.board{border-width:4px;padding:6px;gap:3px}.tier-label{font-size:10px}.settings{display:block}.reserve{padding:10px 6px;font-size:12px}}
+
+.view-toolbar{display:none!important}.view-toolbar label{font-size:13px;color:var(--sub)}.view-toolbar select{width:auto;padding:7px 12px}.tier-grid.stacked{display:block;position:relative;width:min(100%,470px);aspect-ratio:1;margin:20px auto 28px;background:linear-gradient(140deg,#c19a69,#755238);border:12px solid #60452e;border-radius:20px;box-shadow:0 18px 28px #0007,inset 0 0 0 3px #ead3a05c}.tier-grid.stacked .tier-wrap{position:absolute;inset:0;width:100%;max-width:none;pointer-events:none}.tier-grid.stacked .tier-label{display:none}.tier-grid.stacked .board{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:calc(var(--n) * 25%);height:calc(var(--n) * 25%);padding:0;border:0;border-radius:0;gap:0;box-shadow:none;background:none;overflow:visible;pointer-events:none}.tier-grid.stacked .hole{pointer-events:auto;z-index:1;box-shadow:inset 1px 2px 5px #130d09b8;border:1px solid #d9b27b70}.tier-grid.stacked .hole.white:before,.tier-grid.stacked .hole.black:before{inset:calc(7% - 2px);box-shadow:1px 6px 9px #000a}.tier-grid.stacked .hole.white,.tier-grid.stacked .hole.black{background:transparent;border-color:transparent;box-shadow:none}.tier-grid.stacked .tier-wrap:nth-child(1){z-index:1}.tier-grid.stacked .tier-wrap:nth-child(2){z-index:2}.tier-grid.stacked .tier-wrap:nth-child(3){z-index:3}.tier-grid.stacked .tier-wrap:nth-child(4){z-index:4}.tier-grid.stacked .tier-wrap:nth-child(n+2) .hole:not(.white):not(.black):not(.possible):not(.hint):not(.selected):not(.reclaim):not(.last-reclaim){background:transparent;border:0;pointer-events:none;box-shadow:none}.tier-grid.stacked .tier-wrap:nth-child(n+2) .hole:not(.white):not(.black):not(.possible):not(.hint):not(.selected):not(.reclaim):not(.last-reclaim):after{display:none}.tier-grid.stacked .hole.possible{background:#1d5b49b8!important;outline:2px solid #a2f6cc}.tier-grid.stacked .hole.hint{outline:4px solid #f6d06c;z-index:2}.tier-grid.stacked .board{--cell:25%}.analysis-box{margin-top:12px;padding:12px;border:1px solid #bd9b60;background:#2d3f35;border-radius:10px;font-size:13px;color:#f0e3c8}.analysis-box b{color:#f4d48c}.view-tip{display:none!important}
+body[data-board-theme="wood"] .tier-grid.stacked{background:linear-gradient(145deg,#9d5f34,#6d3f22 45%,#8a522a 100%);border-color:#8f5930;border-radius:26px;box-shadow:0 18px 30px #0008,inset 0 0 0 2px #d4ab7a70,inset 0 0 24px #00000018;overflow:hidden}
+body[data-board-theme="wood"] .tier-grid.stacked:before{content:'';position:absolute;inset:14px;border-radius:18px;background:linear-gradient(145deg,#ba7640,#874b27 45%,#a05e32 100%);box-shadow:inset 0 2px 3px #efc6946b,inset 0 -3px 10px #00000024;z-index:0}
+body[data-board-theme="wood"] .tier-grid.stacked:after{content:'';position:absolute;inset:26px;border-radius:14px;background:linear-gradient(145deg,#a66638,#874c28 55%,#96582d);box-shadow:inset 0 0 22px #5d31161f,inset 0 0 0 2px #ddb47f55;z-index:0}
+body[data-board-theme="wood"] .tier-grid.stacked .tier-wrap{z-index:1}
+body[data-board-theme="wood"] .tier-grid.stacked .hole{box-shadow:inset 1px 3px 7px #311d11bf;border:1px solid #af74456e}
+body[data-board-theme="wood"] .tier-grid.stacked .hole.white,body[data-board-theme="wood"] .tier-grid.stacked .hole.black{box-shadow:none;border-color:transparent}
+body[data-board-theme="wood"] .hole{background:radial-gradient(circle at 56% 64%,#3a2214,#5a3520 62%,#87522b 84%,#bc7c47 98%)}
+body[data-board-theme="wood"] .hole.white:before,body[data-board-theme="wood"] .ball.white{background:radial-gradient(circle at 34% 24%,#fff9e6 0,#f2ddb2 42%,#ddb77c 73%,#a3774d 100%)}
+body[data-board-theme="wood"] .hole.black:before,body[data-board-theme="wood"] .ball.black{background:radial-gradient(circle at 31% 20%,#7e624d 0%,#553725 36%,#2a170f 77%,#130906 100%)}
+
+@media(max-width:520px){.tier-grid.stacked{border-width:8px}.tier-grid.stacked .hole.white:before,.tier-grid.stacked .hole.black:before{inset:7%}}
+
+.hole.last-move{outline:4px solid #ffdb6c!important;outline-offset:1px;z-index:7!important;filter:drop-shadow(0 0 7px #ffe58b);animation:lastMovePulse 1.5s ease-in-out 3}
+.hole.last-source{outline:3px dashed #ffce71!important;outline-offset:1px}
+.hole.last-reclaim{outline:3px dashed #ff994a!important;outline-offset:1px;z-index:9!important;background:radial-gradient(circle,#54331f 0%,#62452a 65%,#8c5b30 100%)!important;box-shadow:0 0 0 3px #ff994a55,inset 0 2px 5px #26160c!important}
+.hole.last-reclaim:after{content:'×'!important;display:flex!important;position:absolute!important;inset:0!important;align-items:center;justify-content:center;background:transparent!important;color:#ffe9bb!important;font-size:clamp(18px,3vw,35px)!important;font-weight:900!important;text-shadow:0 1px 4px #000!important;z-index:5!important}
+.tier-grid.stacked .tier-wrap:nth-child(n+2) .hole.last-reclaim{pointer-events:none;opacity:1!important}
+/* A reclaimed hollow can become a legal destination on the very next move. */
+.tier-grid.stacked .tier-wrap:nth-child(n+2) .hole.last-reclaim.possible,.tier-grid.stacked .tier-wrap:nth-child(n+2) .hole.last-reclaim.hint,.tier-grid.stacked .tier-wrap:nth-child(n+2) .hole.last-reclaim.selected{pointer-events:auto!important}
+.hole.last-reclaim:after{pointer-events:none!important}
+.hole.last-reclaim.possible{cursor:pointer;outline:3px solid #89dcc0!important;outline-offset:-2px;box-shadow:0 0 0 3px #ff994a55,inset 0 2px 5px #26160c!important}
+/* When the destination was reclaimed on the same turn, make the gold ring
+   large and OUTSIDE the orange cross instead of an obscured inner glow. */
+.hole.last-move.last-reclaim{outline:4px solid #ffe47a!important;outline-offset:5px!important;box-shadow:0 0 0 3px #4a311e,0 0 0 9px #ffdc64a8,0 0 17px 9px #f9bf58a0!important;z-index:15!important;animation:reclaimedDestinationPulse 1.7s ease-in-out infinite!important}
+.hole.last-move.last-reclaim:after{color:#fff1c8!important;text-shadow:0 0 5px #542900,0 0 10px #ffe47a!important}
+@keyframes reclaimedDestinationPulse{0%,100%{filter:drop-shadow(0 0 2px #ffd864)}50%{filter:drop-shadow(0 0 12px #ffd864)}}
+.hole.victory-place{outline:4px solid #baf5da!important;outline-offset:1px;z-index:8!important;animation:lastMovePulse 1.3s ease-in-out infinite}
+@keyframes lastMovePulse{0%,100%{filter:drop-shadow(0 0 2px #ffce71)}50%{filter:drop-shadow(0 0 12px #ffef9e)}}
+@media(prefers-reduced-motion:reduce){.hole.last-move,/* When the destination was reclaimed on the same turn, make the gold ring
+   large and OUTSIDE the orange cross instead of an obscured inner glow. */
+.hole.last-move.last-reclaim{outline:4px solid #ffe47a!important;outline-offset:5px!important;box-shadow:0 0 0 3px #4a311e,0 0 0 9px #ffdc64a8,0 0 17px 9px #f9bf58a0!important;z-index:15!important;animation:reclaimedDestinationPulse 1.7s ease-in-out infinite!important}
+.hole.last-move.last-reclaim:after{color:#fff1c8!important;text-shadow:0 0 5px #542900,0 0 10px #ffe47a!important}
+@keyframes reclaimedDestinationPulse{0%,100%{filter:drop-shadow(0 0 2px #ffd864)}50%{filter:drop-shadow(0 0 12px #ffd864)}}
+.hole.victory-place{animation:none}}
+body.analysis-mode .layout{grid-template-columns:minmax(0,1fr)}
+body.analysis-mode .settings{display:none}
+.analysis-banner{display:none;background:#263c34;border:1px solid #80c9ad;border-radius:12px;padding:13px;margin:0 0 16px}
+body.analysis-mode .analysis-banner{display:block}
+.analysis-banner .row{align-items:center;justify-content:space-between}
+.analysis-banner strong{color:#bcebd1}
+.analysis-banner p{color:#d6e5dc;margin:6px 0 10px;font-size:13px}
+body.analysis-mode #analysisOpenBtn{display:none}
+/* Best move remains available while exploring either side in Analysis Board. */
+.endgame-actions{margin-top:12px;padding:12px;border:1px solid #657963;border-radius:10px;background:#294038}
+.endgame-actions p{margin:0 0 9px;font-size:13px;color:#e1ebdb}
+/* Keep suggested reclaim targets distinct from ordinary eligible spheres. */
+.hole.reclaim-hint,.tier-grid.stacked .hole.reclaim-hint{outline:5px solid #ffe36e!important;outline-offset:3px!important;box-shadow:0 0 0 5px #6c4b18,0 0 15px 5px #ffd65f99!important;z-index:17!important}
+.btn.reclaim-finish-hint{border:3px solid #ffe36e!important;box-shadow:0 0 12px #f4ce61a8}
+
+/* Compact mobile-friendly controls: at most three rows, including reclamation. */
+.action-controls{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:9px;margin-top:14px}
+.action-controls .btn{min-width:0;width:100%;padding:10px 6px;white-space:nowrap}
+#placeBtn,#raiseBtn{grid-column:span 3}
+#undoBtn,#hintBtn,#analysisOpenBtn{grid-column:span 2}
+#finishBtn,#cancelBtn{grid-column:span 3}
+@media(max-width:520px){.action-controls{gap:7px}.action-controls .btn{font-size:12px;padding:11px 3px;letter-spacing:-.15px}}
+
+/* Self-contained photorealistic wood materials. */
+/* v19: remove obsolete wooden-board overlays; the photographic tray is the only board surface. */
+body[data-board-theme="wood"] .tier-grid.stacked::before,
+body[data-board-theme="wood"] .tier-grid.stacked::after{content:none!important;display:none!important}
+/* Inset the complete 4-level grid uniformly, keeping all layer centres aligned.
+   Its balls remain inside their individual grid cells with no same-layer overlap. */
+body[data-board-theme="wood"] .tier-grid.stacked .tier-wrap{inset:6.5%!important;width:87%!important;height:87%!important}
+/* Avoid the old CSS background on the occupied holes. */
+body[data-board-theme="wood"] .tier-grid.stacked .hole.white,
+body[data-board-theme="wood"] .tier-grid.stacked .hole.black{background:transparent!important}
+
+body[data-board-theme="wood"] .tier-grid.stacked{background:#6d4a31 url("assets/wood-board.png") center/cover no-repeat;border:0;border-radius:22px;box-shadow:0 18px 28px #0007;overflow:hidden}
+body[data-board-theme="wood"] .tier-grid.stacked .board{background:none}
+body[data-board-theme="wood"] .tier-grid.stacked .hole{border:0;box-shadow:none;background:transparent}
+body[data-board-theme="wood"] .tier-grid.stacked .hole:not(.white):not(.black){background:radial-gradient(circle 35% at 50% 53%, rgba(34,20,13,.98) 0%, rgba(57,35,24,.98) 42%, rgba(85,56,39,.96) 62%, rgba(120,84,60,.82) 76%, rgba(186,148,112,.38) 90%, rgba(255,255,255,.10) 95%, rgba(0,0,0,0) 100%); box-shadow: inset 0 12px 16px rgba(255,255,255,.05), inset 0 -12px 18px rgba(0,0,0,.34)}
+body[data-board-theme="wood"] .tier-grid.stacked .hole.white,body[data-board-theme="wood"] .tier-grid.stacked .hole.black{background:transparent!important;border-color:transparent;box-shadow:none}
+body[data-board-theme="wood"] .tier-grid.stacked .hole.white:before,body[data-board-theme="wood"] .tier-grid.stacked .hole.black:before{content:'';position:absolute;inset:calc(7% - 2px);border-radius:50%;background-size:100% 100%;background-position:center;background-repeat:no-repeat;box-shadow:0 4px 7px rgba(0,0,0,.38)}
+body[data-board-theme="wood"] .tier-grid.stacked .hole.white:before{background-image:url("assets/ivory-sphere.png")}
+body[data-board-theme="wood"] .tier-grid.stacked .hole.black:before{background-image:url("assets/onyx-sphere.png")}
+body[data-board-theme="wood"] .ball.white{background:url("assets/ivory-sphere.png") center/cover no-repeat;border-radius:50%;box-shadow:0 2px 4px rgba(0,0,0,.35)}
+body[data-board-theme="wood"] .ball.black{background:url("assets/onyx-sphere.png") center/cover no-repeat;border-radius:50%;box-shadow:0 2px 4px rgba(0,0,0,.35)}
+body[data-board-theme="wood"] .tier-grid.stacked .hole.possible{background:rgba(29,91,73,.58)!important;outline:2px solid #a2f6cc;outline-offset:-1px}
+body[data-board-theme="wood"] .tier-grid.stacked .hole.possible:after{content:'';position:absolute;inset:34%;background:#9de8cbb8;border-radius:50%}
+body[data-board-theme="wood"] .tier-grid.stacked .hole.hint{outline:4px solid #f6d06c;z-index:2}
+body[data-board-theme="wood"] .tier-grid.stacked .hole.reclaim{outline:3px solid #e7be7b;outline-offset:-2px}
+body[data-board-theme="wood"] .tier-grid.stacked .hole.selected{outline:3px solid #eee;outline-offset:2px}
+
+/* Opening Explorer: a separate analysis study, never changes the live match. */
+.opening-explorer{margin:12px 0 0;padding:12px;border-radius:12px;border:1px solid #967c50;background:#26382f}
+.opening-explorer .op-top{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.opening-explorer h4{font:18px Georgia,serif;margin:0 0 8px;color:#f0d9ab}
+.opening-explorer select{flex:1;min-width:130px;width:auto;padding:9px}
+.opening-explorer button{font-size:12px}
+.opening-explorer .op-replies{display:flex;gap:7px;flex-wrap:wrap;margin:9px 0 0}
+.opening-explorer .op-replies .btn{padding:7px 10px}
+.opening-explorer .op-replies .op-current{border-color:#f5cf7d;background:#5c4e31}
+.opening-explorer .op-info{font-size:12px;color:#cbd8cd;margin:8px 0 0;line-height:1.5}
+.opening-explorer .op-count{font-size:12px;color:#f1d79d;margin:7px 0 0}
+.opening-explorer .op-goal{border:1px dashed #9c8c62;border-radius:9px;padding:8px;margin-top:8px}
+.opening-explorer .op-goal b{color:#f5d89a}
+.opening-start{margin:0 0 15px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.opening-start .btn{border-color:#ae986e}
+@media(max-width:520px){.opening-explorer .op-top{display:grid;grid-template-columns:1fr 1fr}.opening-explorer select{grid-column:1/-1;width:100%}.opening-explorer .op-replies{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}.opening-explorer .op-replies .btn{padding:9px 4px}}
+
+/* Formation-preserving guide: only visible in Build from start mode. */
+.op-preserve{margin-top:12px;padding:11px;border:1px solid #8cae8e;border-radius:10px;background:#1d332b}
+.op-preserve h5{margin:0 0 6px;font-size:14px;color:#f4db9f}
+.op-preserve p{font-size:12px;color:#d4ded3;line-height:1.45;margin:5px 0}
+.op-preserve .op-rank{display:grid;grid-template-columns:repeat(auto-fit,minmax(94px,1fr));gap:6px;margin-top:9px}
+.op-preserve .op-rank button{padding:8px 6px;text-align:left;white-space:normal;font-size:12px;line-height:1.35;background:#304b3c;border:1px solid #6d9278;color:#f4f0df;border-radius:8px;cursor:pointer}
+.op-preserve .op-rank button.op-top-move{border-color:#e6c26f;background:#4c4830}
+.op-preserve .op-rank button:disabled{opacity:.5;cursor:default}
+.op-preserve .op-rank small{display:block;color:#d4dccc;font-size:10px;margin-top:2px}
+.op-preserve .op-legend{font-size:11px;color:#b7cbb9}
+body.analysis-mode .tier-grid.stacked .tier-wrap:first-child .hole.op-move-score:after{content:attr(data-op-score)!important;pointer-events:none!important;position:absolute!important;inset:2px 2px auto auto!important;width:20px!important;height:20px!important;border-radius:50%!important;display:flex!important;align-items:center!important;justify-content:center!important;background:#e4c36c!important;color:#211b12!important;font:bold 12px/1 system-ui,sans-serif!important;box-shadow:0 2px 4px #0009!important;z-index:10!important;opacity:1!important}
+@media(max-width:520px){body.analysis-mode .tier-grid.stacked .tier-wrap:first-child .hole.op-move-score:after{width:17px!important;height:17px!important;font-size:10px!important;inset:0 0 auto auto!important}}
+
+/* Final override: fix pale overlap fringe on light wooden spheres */
+body[data-board-theme="wood"] .tier-grid.stacked .hole.white:before{
+  clip-path:circle(49.1% at 50% 50%);
+  box-shadow:0 4px 7px rgba(0,0,0,.34), inset 0 0 0 1px rgba(150,112,74,.18), inset -1px -2px 3px rgba(123,88,54,.12) !important;
+}
+body[data-board-theme="wood"] .ball.white{
+  clip-path:circle(49.1% at 50% 50%);
+  box-shadow:0 2px 4px rgba(0,0,0,.32), inset 0 0 0 1px rgba(150,112,74,.16), inset -1px -1px 2px rgba(123,88,54,.10) !important;
+}
+</style>
+<meta name="theme-color" content="#162923">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Pylos">
+<meta name="description" content="Pylos strategy game and training board. Play offline against AI or a friend, study openings, and connect online with a private room.">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="64x64" href="./icons/favicon-64.png">
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+<script src="./firebase-config.js"></script>
+</head><body><main class="wrap"><header class="top"><div><div class="kicker">THE PYRAMID STRATEGY GAME</div><div class="brand">PYLOS <span style="font:italic 18px Georgia;color:#bdc7b9;letter-spacing:0">trainer</span></div></div><span class="pill">Offline play · online rooms optional</span></header><div class="layout"><section class="panel arena"><div class="opening-start"><button class="btn" id="openingOpenBtn">▦ Opening Explorer</button><span class="muted" style="font-size:12px">Study the Wall, Broken Symmetry and Square.</span></div><div class="analysis-banner" id="analysisBanner"><div class="row"><strong>Analysis Board · exploring a variation</strong><button class="btn primary" id="analysisExitBtn">← Return to live game</button></div><p>This is a separate copy of the game position. Make moves for both colours, undo one move at a time, or reset the variation. Your actual game is unchanged.</p><div class="row"><button class="btn" id="analysisResetBtn">↺ Reset variation</button><span class="pill" id="analysisDepth">0 exploratory moves</span></div>
+<div class="opening-explorer" id="openingExplorerPanel">
+<h4>Opening Position Explorer</h4>
+<div class="op-top"><select id="openingPreset" aria-label="Choose a guide formation"><option value="wall">The Wall</option><option value="broken">Broken Symmetry</option><option value="square">The Square</option></select><button class="btn primary" id="openingLoadBtn">Load diagram</button><button class="btn" id="openingBuildBtn">Build from start</button></div>
+<p class="op-info" id="openingInfo">Choose a formation from the strategy guide and load it, or practise building one from an empty board.</p>
+<div class="op-goal" id="openingGoal" style="display:none"></div>
+
+<div class="op-preserve" id="openingPreserve" style="display:none" aria-live="polite">
+  <h5>Preserve the three shapes</h5>
+  <p id="openingPreserveSummary"></p>
+  <p class="op-legend">Gold numbers on the foundation show how many of the Wall, Broken Symmetry and Square are still possible after that placement (allowing rotations/reflections). The move list also counts matching orientations and exact-colour versions. This is a formation guide, not a game-theoretic best-move rating.</p>
+  <div class="op-rank" id="openingPreserveMoves"></div>
+</div>
+<div class="op-replies" id="openingReplies"></div>
+<p class="op-count" id="openingFeedback"></p>
+</div></div><div class="status" aria-live="polite"><strong id="status">White to play</strong><small id="substatus">Choose an empty hollow, or lift a free sphere.</small></div><div class="tier-grid stacked" id="tiers"></div><div class="reserves"><div class="reserve active" id="whiteReserve"><span class="ball white"></span><span>Ivory <small id="whiteName">(You)</small></span><span class="count" id="wcount">15</span></div><div class="reserve" id="blackReserve"><span class="ball black"></span><span>Onyx <small id="blackName">(AI)</small></span><span class="count" id="bcount">15</span></div></div><div class="action-note" id="note">Tap an available hollow to place a sphere from your reserve.</div><div class="action-controls" id="actionControls"><button class="btn" id="placeBtn">Place from reserve</button><button class="btn" id="raiseBtn">Lift a sphere</button><button class="btn" id="undoBtn">↶ Undo</button><button class="btn" id="hintBtn">✧ Best move</button><button class="btn primary" id="analysisOpenBtn">◇ Analysis Board</button><button class="btn primary" id="finishBtn" style="display:none">Finish move</button><button class="btn" id="cancelBtn" style="display:none">Undo reclaim</button></div><div id="endgame" class="endgame-actions" style="display:none" aria-live="polite"><p id="endgameText"></p><div class="row"><button class="btn" id="replayBtn">↻ Replay victory placements</button><button class="btn" id="resetDisplayBtn">Show final competitive position</button></div></div><div id="analysis" class="analysis-box" style="display:none" aria-live="polite"></div></section><aside class="panel settings"><div><h3>Game settings</h3><div class="row" style="margin-top:17px"><button class="btn primary" style="width:100%" id="newBtn">Start new game</button></div><label class="setting" for="side">Your colour</label><select id="side"><option value="1">Ivory · move first</option><option value="-1">Onyx · move second</option></select><label class="setting" for="mode">Opponent</label><select id="mode"><option value="ai">Play against AI</option><option value="human">Two players · same device</option><option value="online">Online multiplayer · private room</option></select><div id="onlinePanel" class="online-panel" style="display:none"><h3>Online multiplayer</h3><p class="online-small">Create or join a private room after adding your Firebase web configuration. Only share the room code with your invited opponent. The game must be served from a website (HTTPS) and have internet access for online play. Offline play works without it.</p><label class="setting" for="firebaseConfig">Firebase web configuration (JSON)</label><textarea id="firebaseConfig" rows="4" spellcheck="false" placeholder='{"apiKey":"...","authDomain":"...","databaseURL":"https://...","projectId":"...","appId":"..."}'></textarea><label class="setting" for="roomCode">Room code</label><input id="roomCode" maxlength="8" autocomplete="off" placeholder="Enter code to join"><div class="row online-actions"><button class="btn primary" id="createRoomBtn">Create room</button><button class="btn" id="joinRoomBtn">Join room</button><button class="btn" id="copyInviteBtn" disabled>Copy invite link</button><button class="btn" id="leaveRoomBtn" disabled>Leave room</button></div><div id="onlineStatus" class="online-status" aria-live="polite">Not connected. Host plays Ivory; guest plays Onyx.</div></div><label class="setting" for="difficulty">AI strength</label><select id="difficulty"><option value="noob">Noob · random moves</option><option value="easy" selected>Beginner</option><option value="normal">Club player</option><option value="hard">Challenging</option></select><label class="setting" for="variant">Rules</label><select id="variant"><option value="standard">Standard · squares</option><option value="advanced" selected>Advanced · squares and lines</option><option value="simple">Simple · no reclaiming</option></select><label class="setting" for="boardTheme">Board style</label><select id="boardTheme"><option value="wood" selected>Wooden board (default)</option><option value="classic">Simple board</option></select></div><div class="divider"></div><div class="history-group"><h3>Move history</h3><div class="history" id="history">Your moves appear here.</div></div><div class="divider"></div><div class="rules-group"><h3>How to play</h3><div class="rules"><p><b>Goal:</b> place the final sphere at the pyramid's peak. Each side starts with 15 spheres.</p><p><b>On your turn:</b> place one sphere into any empty, supported hollow; or lift one of your uncovered spheres to a higher supported level.</p><p><b>Make a square:</b> completing a 2×2 square of your own colour lets you reclaim one or two of your uncovered spheres, returning them to your reserve. In this trainer, reclaiming is optional.</p><p><b>Advanced:</b> completing a straight row/column of four on level 1 or three on level 2 also triggers reclaiming.</p><p>When your reserve runs out and you cannot lift, you lose. The four boards show the stacked levels from base to peak. Highlighted hollows are legal moves.</p></div></div></aside></div><p class="footer">An independent playable implementation inspired by the classic abstract strategy game Pylos. Not affiliated with its publisher. AI uses on-device search, not a solved-game database.</p></main><script>
+(()=>{'use strict';
+const dims=[4,3,2,1], coords=[], idx={}, lower=[], above=[], squares=[], lines=[];let k=0;
+for(let z=0;z<4;z++)for(let y=0;y<dims[z];y++)for(let x=0;x<dims[z];x++){const id=`${z},${y},${x}`;idx[id]=k;coords.push({z,y,x,id});lower[k]=[];above[k]=[];k++}
+for(let i=0;i<30;i++){const {z,y,x}=coords[i];if(z){lower[i]=[[y,x],[y+1,x],[y,x+1],[y+1,x+1]].map(([yy,xx])=>idx[`${z-1},${yy},${xx}`]);lower[i].forEach(a=>above[a].push(i))}}
+for(let z=0;z<3;z++)for(let y=0;y<dims[z]-1;y++)for(let x=0;x<dims[z]-1;x++)squares.push([[y,x],[y+1,x],[y,x+1],[y+1,x+1]].map(([yy,xx])=>idx[`${z},${yy},${xx}`]));
+for(let z=0;z<2;z++){let n=dims[z];for(let j=0;j<n;j++){lines.push(Array.from({length:n},(_,x)=>idx[`${z},${j},${x}`]));lines.push(Array.from({length:n},(_,y)=>idx[`${z},${y},${j}`]))}}
+const $=id=>document.getElementById(id);const STORAGE_KEY='pylos-trainer-v8-game';let restoring=false;let onlineJoined=false,onlineRole='',onlineCode='',onlineColor=0,onlineRef=null,onlineUnsub=null,onlineRevision=0,onlineSdk=null,onlineDb=null,onlineUser=null,onlineApplying=false,onlinePending=false;let analysisActive=false,livePosition=null,analysisRoot=null;let openingStudy=null;let view='stacked';let boardTheme='wood';let reclaimHint=[];let b=Array(30).fill(0),reserve=[0,15,15],turn=1,mode='ai',human=1,variant='advanced',difficulty='easy',state='play',action='place',source=-1,reclaim=[],history=[],snapshots=[],winner=0,busy=false,hint=-1,lastMove=null, pendingMove=null, finalPosition=null, victoryTimers=[], victoryPositions=[];
+const key=p=>p===1?1:2, who=p=>p===1?'Ivory':'Onyx', support=(arr,i)=>lower[i].every(v=>arr[v]!==0),free=(arr,i)=>!above[i].some(v=>arr[v]!==0),supported=(arr,i)=>arr[i]===0&&support(arr,i);
+function patternMade(before,after,p){const newly=group=>group.some(set=>set.every(i=>after[i]===p)&&!set.every(i=>before[i]===p));const sq=newly(squares),ln=variant==='advanced'&&newly(lines);return sq&&ln?'square and line':sq?'square':ln?'line':null}
+function squareMade(before,after,p){const sets=variant==='simple'?[]:variant==='advanced'?squares.concat(lines):squares;return sets.some(s=>s.every(i=>after[i]===p)&&!s.every(i=>before[i]===p))}
+function bases(arr,p){let out=[];for(let i=0;i<30;i++)if(supported(arr,i))out.push({type:'place',to:i});for(let i=0;i<30;i++)if(arr[i]===p&&free(arr,i)){let tmp=arr.slice();tmp[i]=0;for(let j=0;j<30;j++)if(coords[j].z>coords[i].z&&supported(tmp,j))out.push({type:'raise',from:i,to:j})}return out}
+function apply(arr,r,p,m){const nb=arr.slice(),nr=r.slice();if(m.type==='raise')nb[m.from]=0;else nr[key(p)]--;nb[m.to]=p;return {b:nb,r:nr,bonus:squareMade(arr,nb,p)}}
+function removables(arr,p){return arr.map((v,i)=>v===p&&free(arr,i)?i:-1).filter(i=>i>=0)}
+function moves(arr,r,p,limit=300){if(arr[29])return[];const raw=bases(arr,p).filter(m=>m.type==='raise'||r[key(p)]>0),out=[];for(const m of raw){const a=apply(arr,r,p,m);out.push({...m,remove:[],b:a.b,r:a.r,bonus:a.bonus});if(a.bonus){const freeM=removables(a.b,p);for(let i=0;i<freeM.length;i++){let nb=a.b.slice(),nr=a.r.slice();nb[freeM[i]]=0;nr[key(p)]++;out.push({...m,remove:[freeM[i]],b:nb,r:nr,bonus:true});for(let j=i+1;j<freeM.length;j++){if(!free(nb,freeM[j]))continue;let nn=nb.slice(),rr=nr.slice();nn[freeM[j]]=0;rr[key(p)]++;out.push({...m,remove:[freeM[i],freeM[j]],b:nn,r:rr,bonus:true})}}}if(out.length>limit*3)break}return out}
+// Enumerate every legal continuation of an in-progress reclaim phase, including
+// finishing immediately or taking one or two more free spheres.
+function reclaimChoices(arr,r,p,already){
+ const out=[];
+ function add(board,counts,picked){
+  out.push({type:'reclaim',remove:picked.slice(),b:board.slice(),r:counts.slice()});
+  if(already+picked.length>=2)return;
+  for(const i of removables(board,p)){
+   // Avoid equivalent two-sphere choices appearing in reverse order.
+   if(picked.length && i<=picked[picked.length-1])continue;
+   const next=board.slice(),nr=counts.slice();next[i]=0;nr[key(p)]++;
+   add(next,nr,[...picked,i]);
+  }
+ }
+ add(arr,r,[]);
+ return out;
+}
+function terminal(arr,r,p){if(arr[29])return arr[29];if(!bases(arr,p).some(m=>m.type==='raise'||r[key(p)]>0))return -p;return 0}
+// A completed position includes turn and both reserves; geometrically identical
+// boards with different reserves or next player are *not* repetitions.
+function positionKey(arr,r,player){return arr.join(',')+'|'+r[1]+','+r[2]+'|'+player}
+function priorPositionCounts(){
+ const seen=new Map();
+ for(const s of snapshots){
+  if(!s||!Array.isArray(s.b)||!Array.isArray(s.reserve)||![1,-1].includes(s.turn))continue;
+  const id=positionKey(s.b,s.reserve,s.turn);
+  seen.set(id,(seen.get(id)||0)+1);
+ }
+ return seen;
+}
+function pastOccurrences(arr,r,player){return priorPositionCounts().get(positionKey(arr,r,player))||0}
+function evaluate(arr,r,p,toMove=0){
+ // terminal detection must use the actual side TO MOVE, not the evaluator's colour.
+ if(arr[29])return arr[29]===p?100000:-100000;
+ if(toMove&&terminal(arr,r,toMove))return terminal(arr,r,toMove)===p?100000:-100000;
+ // Lifts and upper-level play should offset the modest benefit of reserves.
+ let score=(r[key(p)]-r[key(-p)])*9;
+ for(let i=0;i<30;i++)if(arr[i]){
+  let value=3+coords[i].z*11;
+  if(!free(arr,i))value-=coords[i].z===0?0:2;
+  score+=arr[i]===p?value:-value;
+ }
+ // Reward making structures available, but also consider the next side to play.
+ let platforms=0;
+ for(let i=16;i<30;i++)if(supported(arr,i))platforms++;
+ if(toMove)score+=(toMove===p?1:-1)*Math.min(platforms,6)*2;
+ for(const s of squares){
+  let own=0,opp=0;
+  for(const i of s){if(arr[i]===p)own++;else if(arr[i]===-p)opp++}
+  if(!opp)score+=own===3?8:own===2?2:0;
+  if(!own)score-=opp===3?8:opp===2?2:0;
+ }
+ return score;
+}
+// Minimax with cycle awareness. Repetition is not declared a draw: instead,
+// the player voluntarily causing it pays a modest search penalty. A repeat may
+// still be selected if every alternative is worse (no arbitrary forced break).
+function choose(arr,r,p,level,rootChoices=null){
+ let all=rootChoices||moves(arr,r,p,900);
+ if(!all.length)return null;
+ if(level==='noob')return all[Math.floor(Math.random()*all.length)];
+ const seen=priorPositionCounts();
+ const seenAt=(move,player)=>seen.get(positionKey(move.b,move.r,player))||0;
+ const rootRepetition=m=>seenAt(m,-p);
+ function rankMove(m,player){
+  let value=evaluate(m.b,m.r,player,-player);
+  // A completed placement farther up the pyramid is usually useful, while an
+  // immediate reclaim-all pass is not a valuable advance on its own.
+  if(m.to!==undefined)value+=coords[m.to].z*3;
+  const count=seenAt(m,-player);
+  // Placing then reclaiming the very same sphere is effectively a pass;
+  // discourage habitual passes without making them illegal.
+  const unchanged=positionKey(m.b,m.r,player)===positionKey(arr,r,player);
+  return value-count*55-(count>1?100:0)-(unchanged?28:0);
+ }
+ all.sort((a,b)=>rankMove(b,p)-rankMove(a,p));
+ if(level==='easy'){
+  // Beginner has variety but will not blindly choose a known cycle when a
+  // comparable non-repeating move is available.
+  const best=rankMove(all[0],p),pool=all.filter(m=>best-rankMove(m,p)<45).slice(0,6);
+  return pool[Math.floor(Math.random()*pool.length)];
+ }
+ const occupied=arr.filter(v=>v!==0).length;
+ const tactical=occupied>=17&&(r[1]<=6||r[2]<=6);
+ const depth=level==='hard'?(tactical?4:3):2;
+ const beam=level==='hard'?(tactical?8:11):8;
+ let nodes=0;
+ const budget=level==='hard'?(tactical?7500:5200):1800;
+ const path=new Set([positionKey(arr,r,p)]);
+ function search(ar,re,player,d,alpha,beta){
+  const status=terminal(ar,re,player);
+  if(status)return status===p?100000+d:-100000-d;
+  if(!d||nodes++>=budget)return evaluate(ar,re,p,player);
+  const mm=moves(ar,re,player,500);
+  if(!mm.length)return evaluate(ar,re,p,player);
+  mm.sort((a,b)=>rankMove(b,player)-rankMove(a,player));
+  let max=player===p,best=max?-Infinity:Infinity;
+  for(const m of mm.slice(0,beam)){
+   const id=positionKey(m.b,m.r,-player);
+   let v;
+   if(path.has(id)){
+    // Cycle has no established winner. Penalise the side choosing it.
+    v=evaluate(m.b,m.r,p,-player)+(player===p?-70:70);
+   }else{
+    path.add(id);
+    v=search(m.b,m.r,-player,d-1,alpha,beta);
+    path.delete(id);
+   }
+   // Prefer proven results; allow cautious repetition when breaking it loses.
+   const count=seen.get(id)||0;
+   if(Math.abs(v)<90000&&count)v+=(player===p?-1:1)*(count*30+(count>1?75:0));
+   best=max?Math.max(best,v):Math.min(best,v);
+   if(max)alpha=Math.max(alpha,best);else beta=Math.min(beta,best);
+   if(beta<=alpha)break;
+  }
+  return best;
+ }
+ // Bounded number of candidates, but always include each basic destination
+ // so reclaim permutations do not crowd out a non-repeating upward move.
+ const maxRoots=level==='hard'?(tactical?22:20):15;
+ let candidates=all.slice(0,maxRoots);
+ const chosenBase=new Set(candidates.map(m=>m.type+':'+m.to+':'+(m.from??'')));
+ for(const m of all){
+  const id=m.type+':'+m.to+':'+(m.from??'');
+  if(!chosenBase.has(id)&&candidates.length<maxRoots+10){candidates.push(m);chosenBase.add(id)}
+ }
+ let best=-Infinity,chosen=candidates[0];
+ for(const m of candidates){
+  const id=positionKey(m.b,m.r,-p);
+  let val;
+  if(path.has(id))val=evaluate(m.b,m.r,p,-p)-70;
+  else{path.add(id);val=search(m.b,m.r,-p,depth-1,-Infinity,Infinity);path.delete(id)}
+  const times=rootRepetition(m);
+  if(Math.abs(val)<90000&&times)val-=times*90+(times>1?140:0);
+  // A short sequence of no-net-change turns may be useful tactically, but
+  // should not outrank normal development merely to conserve reserves.
+  if(Math.abs(val)<90000&&m.b.every((v,i)=>v===arr[i])&&m.r[1]===r[1]&&m.r[2]===r[2])val-=30;
+  // Highest-level placements are useful tie breakers, not a forced rule.
+  if(m.to!==undefined)val+=coords[m.to].z*0.3;
+  if(val>best){best=val;chosen=m}
+ }
+ chosen.repetitionCount=rootRepetition(chosen);
+ chosen.searchDepth=depth;
+ return chosen;
+}
+function persistGame(){
+ if(restoring||analysisActive)return;
+ try{localStorage.setItem(STORAGE_KEY,JSON.stringify({version:1,b,reserve,turn,mode,human,variant,difficulty,state,action,source,reclaim,history,snapshots,winner,hint,lastMove,pendingMove,finalPosition,view,victoryPositions,analysisHTML:$('analysis').innerHTML,analysisVisible:$('analysis').style.display,settings:{side:$('side').value,mode:$('mode').value,difficulty:$('difficulty').value,variant:$('variant').value,boardTheme:$('boardTheme').value},endgameText:$('endgameText').textContent}));}
+ catch(e){/* local browser storage unavailable, game remains playable */}
+}
+function restoreGame(){
+ try{
+  const raw=localStorage.getItem(STORAGE_KEY);if(!raw)return false;
+  const d=JSON.parse(raw);
+  if(d.version!==1||!Array.isArray(d.b)||d.b.length!==30||!d.b.every(v=>v===0||v===1||v===-1)||!Array.isArray(d.reserve)||d.reserve.length!==3||![1,-1].includes(d.turn)||!['play','reclaim','done'].includes(d.state))return false;
+  restoring=true;
+  b=d.b.slice();reserve=d.reserve.slice();turn=d.turn;
+  mode=['human','ai','online'].includes(d.mode)?d.mode:'ai';human=d.human===-1?-1:1;
+  variant=['simple','standard','advanced'].includes(d.variant)?d.variant:'advanced';difficulty=['noob','easy','normal','hard'].includes(d.difficulty)?d.difficulty:'easy';
+  state=d.state;action=d.action==='raise'?'raise':'place';source=Number.isInteger(d.source)?d.source:-1;
+  reclaim=Array.isArray(d.reclaim)?d.reclaim:[];history=Array.isArray(d.history)?d.history:[];snapshots=Array.isArray(d.snapshots)?d.snapshots:[];
+  winner=d.winner||0;hint=Number.isInteger(d.hint)?d.hint:-1;
+  lastMove=d.lastMove||null;pendingMove=d.pendingMove||null;finalPosition=d.finalPosition||null;
+  view='stacked';victoryPositions=Array.isArray(d.victoryPositions)?d.victoryPositions:[];
+  boardTheme=d.settings&&['classic','wood'].includes(d.settings.boardTheme)?d.settings.boardTheme:'wood';
+  $('side').value=String(human);$('mode').value=mode;$('difficulty').value=difficulty;$('variant').value=variant;$('boardTheme').value=boardTheme;
+  $('difficulty').disabled=mode!=='ai';$('side').disabled=mode!=='ai';$('onlinePanel').style.display=mode==='online'?'block':'none';
+  $('endgame').style.display=state==='done'?'block':'none';$('endgameText').textContent=d.endgameText||'';
+  $('analysis').innerHTML=d.analysisHTML||'';$('analysis').style.display=d.analysisVisible==='block'?'block':'none';
+  busy=false;reclaimHint=[];render();
+  if(state==='reclaim')$('note').textContent=`You made a ${pendingMove?.pattern||'pattern'}! Click 1–2 highlighted free spheres to reclaim, then Finish move. You may also finish without reclaiming.`;
+  if(state==='done'&&finalPosition){/* Reopen at the final competitive result, not midway through a demo. */b=finalPosition.b.slice();reserve=finalPosition.r.slice();victoryPositions=[];render();$('endgameText').textContent='Game restored. Replay illustrative victory placements if you wish.';}
+  restoring=false;persistGame();
+  if(state==='play'&&isAI())aiTurn();
+  return true;
+ }catch(e){restoring=false;return false;}
+}
+function capturePosition(){return JSON.parse(JSON.stringify({b,reserve,turn,mode,human,variant,difficulty,state,action,source,reclaim,history,snapshots,winner,hint,lastMove,pendingMove,finalPosition,victoryPositions,view,note:$('note').textContent,analysisHTML:$('analysis').innerHTML,analysisVisible:$('analysis').style.display,endgameText:$('endgameText').textContent}));}
+function loadPosition(d){b=d.b.slice();reserve=d.reserve.slice();turn=d.turn;mode=d.mode;human=d.human;variant=d.variant;difficulty=d.difficulty;state=d.state;action=d.action;source=d.source;reclaim=d.reclaim.slice();history=d.history.slice();snapshots=JSON.parse(JSON.stringify(d.snapshots));winner=d.winner;hint=d.hint;lastMove=d.lastMove;pendingMove=d.pendingMove;finalPosition=d.finalPosition;victoryPositions=d.victoryPositions.slice();view=d.view;$('analysis').innerHTML=d.analysisHTML;$('analysis').style.display=d.analysisVisible;$('endgameText').textContent=d.endgameText;$('endgame').style.display=state==='done'?'block':'none';busy=false;render();$('note').textContent=d.note;}
+function openAnalysis(){if(analysisActive||busy||state==='reclaim')return;openingStudy=null;stopVictory();if(state==='done'&&finalPosition){b=finalPosition.b.slice();reserve=finalPosition.r.slice();victoryPositions=[];}render();livePosition=capturePosition();analysisRoot=capturePosition();analysisActive=true;mode='human';action='place';source=-1;hint=-1;reclaim=[];snapshots=[];pendingMove=null;lastMove=null;victoryPositions=[];history=[];if(state==='done'){state='play';winner=0;}document.body.classList.add('analysis-mode');$('analysis').style.display='none';$('endgame').style.display='none';render();$('note').textContent='Exploration copy. Play Ivory and Onyx in turn. The live game is safely preserved.';}
+function exitAnalysis(){if(!analysisActive)return;openingStudy=null;analysisActive=false;document.body.classList.remove('analysis-mode');loadPosition(livePosition);livePosition=null;analysisRoot=null;if(mode==='online'&&onlineLatest){applyOnlineView(onlineLatest);onlineLatest=null;}persistGame();}
+function resetAnalysis(){if(!analysisActive)return;if(openingStudy)openingStudy.trial=-1;let d={...analysisRoot,mode:'human',snapshots:[],history:[],pendingMove:null,reclaim:[],lastMove:null,hint:-1,action:'place',source:-1,victoryPositions:[],state:analysisRoot.state==='done'?'play':analysisRoot.state,winner:analysisRoot.state==='done'?0:analysisRoot.winner};loadPosition(d);$('endgame').style.display='none';$('analysis').style.display='none';$('note').textContent='Variation reset to the copied starting position.';}
+
+// The PDF's Figure 2 (p.2), Figure 3 (p.2), Figure 4 (p.3).
+// Each arrangement has 6 Ivory, 5 Onyx, 5 holes; Black is next.
+const OPENING_PATTERNS={
+ wall:{name:'The Wall',rows:['WB.W','B.WB','.WB.','BW.W'],idea:'Five remaining foundation placements all complete a mixed-colour 2×2 support square. The challenge is getting here without Black interfering.'},
+ broken:{name:'Broken Symmetry',rows:['WB.W','B.WB','BWB.','.W.W'],idea:'Shift one wall edge sphere: the geometric property survives, but symmetry changes.'},
+ square:{name:'The Square',rows:['WBW.','B.WB','BWB.','.W.W'],idea:'A 3×3 block with its centre empty; again every remaining foundation move completes a support platform.'}
+};
+function openingCells(name){return OPENING_PATTERNS[name].rows.join('').split('').map(c=>c==='W'?1:c==='B'?-1:0)}
+function openingHoles(name){return openingCells(name).map((v,i)=>v===0?i:-1).filter(i=>i>=0)}
+function openingCoordinate(i){return String.fromCharCode(65+(i%4))+(Math.floor(i/4)+1)}
+// All rotations and reflections of each PDF formation. The score tracks
+// compatibility, not whether an opponent can be forced to cooperate.
+const OPENING_FAMILIES=Object.keys(OPENING_PATTERNS);
+const OPENING_VARIANTS=Object.fromEntries(OPENING_FAMILIES.map(name=>{
+ const base=openingCells(name),seen=new Set(),variants=[];
+ for(let reflect=0;reflect<2;reflect++)for(let rotate=0;rotate<4;rotate++){
+  let variant=Array(16);
+  for(let y=0;y<4;y++)for(let x=0;x<4;x++){
+   let px=reflect?3-x:x,py=y;
+   for(let r=0;r<rotate;r++){const nx=3-py;py=px;px=nx;}
+   variant[py*4+px]=base[y*4+x];
+  }
+  const sig=variant.join(',');if(!seen.has(sig)){seen.add(sig);variants.push(variant)}
+ }
+ return [name,variants];
+}));
+function openingCompatibility(board,requireColours=false){
+ let families=[],variantCount=0,byFamily={};
+ for(const name of OPENING_FAMILIES){
+  const valid=OPENING_VARIANTS[name].filter(v=>{
+   for(let i=0;i<16;i++){
+    if(board[i]!==0&&(v[i]===0||(requireColours&&board[i]!==v[i])))return false;
+   }
+   return true;
+  });
+  byFamily[name]=valid.length;
+  if(valid.length){families.push(name);variantCount+=valid.length;}
+ }
+ return {families,variantCount,byFamily};
+}
+function openingMoveOptions(){
+ if(!analysisActive||!openingStudy?.build||state!=='play')return[];
+ const moves=[];
+ for(let i=0;i<16;i++){
+  if(!supported(b,i)||reserve[key(turn)]<=0)continue;
+  const projected=b.slice();projected[i]=turn;
+  const geo=openingCompatibility(projected,false),col=openingCompatibility(projected,true);
+  moves.push({i,geo,col});
+ }
+ return moves.sort((a,c)=>c.geo.families.length-a.geo.families.length||c.geo.variantCount-a.geo.variantCount||c.col.families.length-a.col.families.length||c.col.variantCount-a.col.variantCount||a.i-c.i);
+}
+function openingRenderPreserve(){
+ const panel=$('openingPreserve'),summary=$('openingPreserveSummary'),listing=$('openingPreserveMoves');
+ if(!analysisActive||!openingStudy?.build){panel.style.display='none';return}
+ panel.style.display='block';
+ const geo=openingCompatibility(b,false),col=openingCompatibility(b,true);
+ const names=geo.families.map(k=>OPENING_PATTERNS[k].name).join(', ')||'none';
+ const moves=openingMoveOptions();
+ summary.textContent=`Current foundation: ${geo.families.length}/3 shapes (${geo.variantCount} orientations) remain geometrically possible; ${col.families.length}/3 exact-colour patterns (${col.variantCount} orientations) remain. Families: ${names}. `+(state==='reclaim'?'Finish reclaiming before analysing your next placement.':moves.length?'Tap a candidate to play it for '+who(turn)+'.':'No foundation placement is currently available.');
+ listing.innerHTML='';
+ const max=moves.length?moves[0].geo.families.length:-1;
+ for(const m of moves){
+  const el=document.createElement('button');
+  el.className=m.geo.families.length===max?'op-top-move':'';
+  el.disabled=!!busy||state!=='play';
+  const coord=openingCoordinate(m.i);
+  el.innerHTML=`<strong>${coord} · ${m.geo.families.length}/3</strong><small>${m.geo.variantCount} orientations · ${m.col.families.length} exact-colour families</small>`;
+  el.title='Play '+who(turn)+' at L1 '+coord+'. Preserves '+m.geo.families.map(k=>OPENING_PATTERNS[k].name).join(', ');
+  el.onclick=()=>{if(state!=='play'||!openingStudy?.build)return;action='place';source=-1;onHole(m.i)};
+  listing.appendChild(el);
+ }
+}
+function openingSetPosition(next,build){
+ let board=build?Array(30).fill(0):openingCells(next).concat(Array(14).fill(0));
+ b=board;reserve=build?[0,15,15]:[0,9,10];turn=build?1:-1;
+ mode='human';state='play';winner=0;action='place';source=-1;reclaim=[];reclaimHint=[];
+ history=[];snapshots=[];hint=-1;lastMove=null;pendingMove=null;finalPosition=null;victoryPositions=[];busy=false;
+ $('endgame').style.display='none';$('analysis').style.display='none';
+ openingStudy={preset:next,build:!!build,trial:-1};
+ analysisRoot=capturePosition();
+ render();
+ $('note').textContent=build?'Opening exercise: suggested foundation moves are ranked by how many target shapes remain possible. Both colours can influence the outcome.':'Opening diagram loaded. Black to move. Test each of the five possible replies.';
+}
+function enterOpeningStudy(name,build=false){
+ if(busy||state==='reclaim'){$('note').textContent='Finish the current move before opening a study.';return}
+ if(!analysisActive)openAnalysis();
+ if(!analysisActive)return;
+ stopVictory();$('openingPreset').value=name;
+ openingSetPosition(name,build);
+}
+function openingPlayResponse(i){
+ if(!analysisActive||!openingStudy||openingStudy.build)return;
+ const id=openingStudy.preset;
+ if(!openingHoles(id).includes(i))return;
+ // Reload the original diagram, then complete Black's legal foundation placement.
+ openingSetPosition(id,false);
+ openingStudy.trial=i;
+ if(!supported(b,i)||turn!==-1)return;
+ commit({type:'place',to:i});
+ $('note').textContent='Black has completed a support square at L1 '+openingCoordinate(i)+'. Now explore the best follow-up as Ivory. Use Reset variation or another reply to compare.';
+ renderOpeningStudy();
+}
+function openingGoalDetails(){
+ if(!openingStudy||!openingStudy.build)return'';
+ const target=openingCells(openingStudy.preset);let correct=0,wrong=0,filled=0;
+ for(let i=0;i<16;i++){if(b[i]===target[i]&&target[i]!==0)correct++;if(b[i]!==0){filled++;if(b[i]!==target[i])wrong++;}}
+ return `Target matches: ${correct}/11 · conflicting placements: ${wrong} · foundation occupied: ${filled}/16. `+(wrong?'The current formation is blocked unless a sphere is later reclaimed or lifted.':'Continue placing spheres with both colours.');
+}
+function renderOpeningStudy(){
+ const info=$('openingInfo'),goal=$('openingGoal'),buttons=$('openingReplies'),feedback=$('openingFeedback');
+ if(!analysisActive){return}
+ if(!openingStudy){info.textContent='Live-position analysis: choose a formation and Load diagram, or Build from start.';goal.style.display='none';$('openingPreserve').style.display='none';buttons.innerHTML='';feedback.textContent='';return}
+ const spec=OPENING_PATTERNS[openingStudy.preset],holes=openingHoles(openingStudy.preset);
+ $('openingPreset').value=openingStudy.preset;
+ info.textContent=spec.name+': '+spec.idea;
+ goal.style.display=openingStudy.build?'block':'none';
+ if(openingStudy.build){
+  const cells=openingCells(openingStudy.preset);
+  goal.innerHTML='<b>Target foundation</b><div style="display:grid;grid-template-columns:repeat(4,27px);gap:3px;margin:6px 0">'+cells.map(v=>'<span style="height:27px;width:27px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:1px solid #b9a889;background:'+(v===1?'#e9d4aa':v===-1?'#362117':'#506359')+';color:'+(v===1?'#222':'#fff')+'">'+(v===0?'·':'')+'</span>').join('')+'</div><small>Ivory / Onyx / empty. Target orientation shown; the guide considers all rotations and reflections.</small>';
+  buttons.innerHTML='';feedback.textContent=openingGoalDetails();
+  openingRenderPreserve();
+ }else{
+  openingRenderPreserve();
+  buttons.innerHTML='';
+  for(let k=0;k<holes.length;k++){
+   const i=holes[k],btn=document.createElement('button');btn.className='btn'+(openingStudy.trial===i?' op-current':'');btn.textContent=(k+1)+'. '+openingCoordinate(i);btn.title='Reset and try Black at L1 '+openingCoordinate(i);btn.onclick=()=>openingPlayResponse(i);buttons.appendChild(btn);
+  }
+  feedback.textContent=openingStudy.trial>=0?'Studying Black at L1 '+openingCoordinate(openingStudy.trial)+' · play both colours or choose another reply.':'Select a Black reply above, or tap any available foundation hollow on the board.';
+ }
+}
+$('openingOpenBtn').onclick=()=>enterOpeningStudy('wall',false);
+$('openingLoadBtn').onclick=()=>enterOpeningStudy($('openingPreset').value,false);
+$('openingBuildBtn').onclick=()=>enterOpeningStudy($('openingPreset').value,true);
+
+function save(){snapshots.push({b:b.slice(),reserve:reserve.slice(),turn,history:history.slice(),winner,lastMove:lastMove?{...lastMove}:null});if(snapshots.length>200)snapshots.shift()}
+function isAI(){return mode==='ai'&&turn!==human}function lockedTurn(){return isAI()||(mode==='online'&&!analysisActive&&(!onlineJoined||turn!==onlineColor||onlinePending))}
+function stopVictory(){for(const t of victoryTimers)clearTimeout(t);victoryTimers=[]}
+function victoryShow(){
+ stopVictory();if(!finalPosition)return;
+ b=finalPosition.b.slice();reserve=finalPosition.r.slice();victoryPositions=[];
+ const possible=[];let demoB=b.slice(),demoR=reserve.slice();
+ // These are illustrative placements, not additional competitive turns.
+ for(let step=0;step<30&&demoR[key(winner)]>0;step++){
+  const locations=coords.map((_,i)=>i).filter(i=>supported(demoB,i));
+  if(!locations.length)break;
+  locations.sort((a,c)=>coords[a].z-coords[c].z||a-c);
+  const spot=locations[0];demoB[spot]=winner;demoR[key(winner)]--;
+  possible.push(spot);
+ }
+ if(!possible.length){$('endgameText').textContent='Game complete. No further reserve-sphere placements are available for a demonstration.';render();return}
+ $('endgameText').textContent=`${who(winner)} has won. Showing ${possible.length} additional possible placements in sequence (illustration only; not tournament moves).`;
+ render();
+ possible.forEach((spot,i)=>{victoryTimers.push(setTimeout(()=>{
+  if(state!=='done'||!finalPosition)return;
+  b[spot]=winner;reserve[key(winner)]--;victoryPositions.push(spot);
+  render();
+ },900+i*650))});
+}
+function finish(text){history.push(`${history.length+1}. ${who(turn)}: ${text}`);hint=-1;$('analysis').style.display='none';source=-1;const removedThisTurn=reclaim.slice();reclaim=[];reclaimHint=[];action='place';if(pendingMove){lastMove={...pendingMove,removed:removedThisTurn};pendingMove=null}
+if(b[29]){winner=turn;state='done'}else{turn=-turn;if(!bases(b,turn).some(m=>m.type==='raise'||reserve[key(turn)]>0)){winner=-turn;state='done'}else state='play'}
+if(state==='done'){finalPosition={b:b.slice(),r:reserve.slice()};$('endgame').style.display='block';}render();if(mode==='online'&&!analysisActive&&onlineJoined)void publishOnlineTurn();if(state==='done'&&!analysisActive)victoryShow();else if(isAI())aiTurn()}
+function commit(m){save();const before=b.slice();pendingMove={type:m.type,to:m.to,from:m.type==='raise'?m.from:-1};const a=apply(b,reserve,turn,m);pendingMove.pattern=patternMade(before,a.b,turn);b=a.b;reserve=a.r;if(a.bonus){state='reclaim';reclaim=[];reclaimHint=[];$('note').textContent=`You made a ${pendingMove.pattern||'pattern'}! Click 1–2 highlighted free spheres to reclaim, then Finish move. You may also finish without reclaiming.`;render()}else finish(describe(m))}
+function describe(m){return m.type==='raise'?`lift ${pos(m.from)} → ${pos(m.to)}`:`place ${pos(m.to)}`}
+function pos(i){const c=coords[i];return `L${c.z+1} ${String.fromCharCode(65+c.x)}${c.y+1}`}function applyBoardTheme(){document.body.dataset.boardTheme=boardTheme;$('boardTheme').value=boardTheme}
+function onHole(i){if(state==='done'||busy||lockedTurn())return;if(state==='reclaim'){if(b[i]===turn&&free(b,i)&&!reclaim.includes(i)&&reclaim.length<2){b[i]=0;reserve[key(turn)]++;reclaim.push(i);reclaimHint=[];$('analysis').style.display='none';render()}return}if(state!=='play')return;if(action==='raise'){if(source<0){if(b[i]===turn&&free(b,i)){source=i;render()}else $('note').textContent='Select one of your uncovered spheres to lift.';return}else if(i===source){source=-1;render();return}else{const tmp=b.slice();tmp[source]=0;if(coords[i].z>coords[source].z&&supported(tmp,i)){let s=source;commit({type:'raise',from:s,to:i});return}$('note').textContent='The destination must be a supported, empty hollow on a higher level.';return}}if(supported(b,i)&&reserve[key(turn)]>0)commit({type:'place',to:i});else $('note').textContent='That hollow is not ready yet. Empty higher hollows need four spheres supporting them.'}
+function render(){const ai=lockedTurn();applyBoardTheme();$('tiers').classList.toggle('stacked',view==='stacked');$('tiers').innerHTML='';for(let z=0;z<4;z++){const wrap=document.createElement('div');wrap.className='tier-wrap';wrap.innerHTML=`<div class="tier-label">Level ${z+1} ${z===0?'· foundation':z===3?'· summit':''}</div>`;const bd=document.createElement('div');bd.className='board';bd.style.setProperty('--n',dims[z]);bd.style.setProperty('--size',`${dims[z]*70+32}px`);for(const c of coords.filter(c=>c.z===z)){const i=idx[c.id],el=document.createElement('button');el.className='hole'+(b[i]===1?' white':b[i]===-1?' black':'');el.title=`${pos(i)}${b[i]?' · '+who(b[i]):''}`;el.setAttribute('aria-label',el.title);if(state==='reclaim'&&b[i]===turn&&free(b,i)&&reclaim.length<2)el.classList.add('reclaim');if(state==='reclaim'&&reclaimHint.includes(i))el.classList.add('reclaim-hint');if(state==='play'&&!ai&&!busy){if(action==='place'&&supported(b,i)&&reserve[key(turn)]>0)el.classList.add('possible');if(action==='raise'&&source<0&&b[i]===turn&&free(b,i))el.classList.add('reclaim');if(action==='raise'&&source>=0){if(i===source)el.classList.add('selected');let tmp=b.slice();tmp[source]=0;if(coords[i].z>coords[source].z&&supported(tmp,i))el.classList.add('possible')}}if(i===hint)el.classList.add('hint');
+if(lastMove&&i===lastMove.to)el.classList.add('last-move');
+if(lastMove&&i===lastMove.from)el.classList.add('last-source');
+if(lastMove&&lastMove.removed&&lastMove.removed.includes(i)){el.classList.add('last-reclaim');el.title+= ' · sphere reclaimed on last move';el.setAttribute('aria-label',el.title)}
+if(victoryPositions.includes(i))el.classList.add('victory-place');
+if(z===0&&openingStudy?.build&&analysisActive&&state==='play'&&b[i]===0&&reserve[key(turn)]>0){
+ const trial=b.slice();trial[i]=turn;const score=openingCompatibility(trial,false).families.length;
+ el.classList.add('op-move-score');el.dataset.opScore=String(score);
+ el.title+=' · '+score+' of 3 formation families remain';
+}
+el.onclick=()=>onHole(i);bd.appendChild(el)}wrap.appendChild(bd);$('tiers').appendChild(wrap)}$('wcount').textContent=reserve[1];$('bcount').textContent=reserve[2];$('whiteName').textContent=analysisActive?'(analysis)':mode==='human'?'(Player 1)':mode==='online'?(onlineColor===1?'(You)':'(Opponent)'):human===1?'(You)':'(AI)';$('blackName').textContent=analysisActive?'(analysis)':mode==='human'?'(Player 2)':mode==='online'?(onlineColor===-1?'(You)':'(Opponent)'):human===-1?'(You)':'(AI)';$('whiteReserve').classList.toggle('active',turn===1&&state!=='done');$('blackReserve').classList.toggle('active',turn===-1&&state!=='done');$('status').textContent=state==='done'?`${who(winner)} wins!`:state==='reclaim'?`${who(turn)} · reclaim bonus`:ai?(mode==='online'?(onlineJoined?'Waiting for opponent…':'Join or create a room'):'AI is thinking…'):`${who(turn)} to play`;$('substatus').textContent=state==='done'?(b[29]?'The summit is claimed.':'Opponent has no legal move. Remaining winning placements are illustrative.') :state==='reclaim'?`${reclaim.length} of 2 spheres reclaimed`:pastOccurrences(b,reserve,turn)?'Repeated position — try an upward move or a different reclaim':'Choose a highlighted hollow or select Lift a sphere';$('placeBtn').classList.toggle('toggled',action==='place');$('raiseBtn').classList.toggle('toggled',action==='raise');$('placeBtn').disabled=state!=='play'||ai||busy;$('raiseBtn').disabled=state!=='play'||ai||busy;$('hintBtn').disabled=!['play','reclaim'].includes(state)||ai||busy;$('finishBtn').classList.toggle('reclaim-finish-hint',state==='reclaim'&&reclaimHint.length===0&&$('analysis').style.display==='block');$('undoBtn').disabled=!snapshots.length||busy||(mode==='online'&&!analysisActive);$('analysisOpenBtn').disabled=busy||state==='reclaim';if(analysisActive)$('analysisDepth').textContent=`${snapshots.length} exploratory move${snapshots.length===1?'':'s'}`;$('finishBtn').disabled=state==='reclaim'&&lockedTurn();$('finishBtn').style.display=state==='reclaim'?'':'none';$('cancelBtn').disabled=state==='reclaim'&&lockedTurn();$('cancelBtn').style.display=state==='reclaim'?'':'none';if(state==='play'&&!ai&&!busy)$('note').textContent=hint>=0?'Golden outline shows a suggested destination.':action==='raise'?'Select a highlighted uncovered sphere to move it upward.':'Green outlines indicate valid placement hollows.';if(state==='done')$('note').textContent=`${who(winner)} wins. Gold marks the latest competitive move; mint marks post-game illustrative placements.`;
+else if(lastMove&&state==='play')$('note').textContent=`Last move: ${who(-turn)} ${lastMove.from>=0?'lifted '+pos(lastMove.from)+' → ':'played at '}${pos(lastMove.to)} (gold). ${lastMove.removed?.length?'Reclaimed '+lastMove.removed.map(pos).join(' and ')+' (orange × marks). ':''}${action==='raise'?'Lift a sphere or choose Place from reserve.':'Choose a highlighted hollow.'}`;$('history').innerHTML=history.length?history.slice().reverse().map(s=>`<div>${s}</div>`).join(''):'Your moves appear here.';renderOpeningStudy();persistGame()}
+function aiTurn(){busy=true;render();setTimeout(()=>{let m=choose(b,reserve,turn,difficulty);busy=false;if(!m){winner=-turn;state='done';render();return}save();pendingMove={to:m.to,from:m.type==='raise'?m.from:-1,pattern:patternMade(b,apply(b,reserve,turn,m).b,turn)};b=m.b;reserve=m.r;reclaim=m.remove.slice();let label=describe(m)+(pendingMove.pattern?` · ${pendingMove.pattern}`:'')+(m.remove.length?` · reclaim ${m.remove.length} (${m.remove.map(pos).join(', ')})`:'');finish(label)},100)}
+function start(){if(mode==='online'&&onlineJoined&&!analysisActive){$('onlineStatus').textContent='To start a new online game, leave this room and create a new one.';return;}stopVictory();finalPosition=null;victoryPositions=[];lastMove=null;pendingMove=null;$('endgame').style.display='none';mode=$('mode').value;difficulty=$('difficulty').value;human=+$('side').value;variant=$('variant').value;boardTheme=['classic','wood'].includes($('boardTheme').value)?$('boardTheme').value:'wood';b=Array(30).fill(0);reserve=[0,15,15];turn=1;state='play';action='place';source=-1;reclaim=[];history=[];snapshots=[];winner=0;busy=false;hint=-1;reclaimHint=[];$('analysis').style.display='none';$('difficulty').disabled=mode==='human';$('side').disabled=mode==='human';render();if(isAI())aiTurn()}
+$('analysisOpenBtn').onclick=openAnalysis;$('analysisExitBtn').onclick=exitAnalysis;$('analysisResetBtn').onclick=resetAnalysis;$('newBtn').onclick=start;$('placeBtn').onclick=()=>{action='place';source=-1;hint=-1;render()};$('raiseBtn').onclick=()=>{action='raise';source=-1;hint=-1;render()};$('finishBtn').onclick=()=>{if(state==='reclaim'&&!lockedTurn()){const base=pendingMove?describe({type:pendingMove.type||'place',to:pendingMove.to,from:pendingMove.from}):'complete pattern';finish(`${base} · ${pendingMove?.pattern||'pattern'} · reclaim ${reclaim.length}${reclaim.length?' ('+reclaim.map(pos).join(', ')+')':''}`)}};$('cancelBtn').onclick=()=>{if(lockedTurn())return;reclaimHint=[];$('analysis').style.display='none';for(const i of reclaim){b[i]=turn;reserve[key(turn)]--}reclaim=[];render()};$('undoBtn').onclick=()=>{if(busy||(mode==='online'&&!analysisActive))return;stopVictory();finalPosition=null;victoryPositions=[];$('endgame').style.display='none';if(state==='reclaim'){let last=snapshots.pop();if(last){Object.assignRestore(last)}return}let last=snapshots.pop();if(!analysisActive&&mode==='ai'&&turn===human&&snapshots.length){last=snapshots.pop()}if(last)Object.assignRestore(last)};Object.assignRestore=s=>{b=s.b;reserve=s.reserve;turn=s.turn;history=s.history;winner=s.winner;lastMove=s.lastMove||null;pendingMove=null;state='play';source=-1;reclaim=[];reclaimHint=[];action='place';hint=-1;render()};$('hintBtn').onclick=()=>{if(mode==='online'&&!analysisActive&&lockedTurn())return;
+ // A requested hint takes priority over the previous opponent-move markers.
+ // This clears placement, lift-source and reclaimed-position overlays together.
+ lastMove=null;
+ if(state==='reclaim'){
+  const candidates=reclaimChoices(b,reserve,turn,reclaim.length);
+  const best=choose(b,reserve,turn,'hard',candidates);
+  if(!best)return;
+  reclaimHint=best.remove.slice();
+  $('analysis').style.display='block';
+  const recommendation=best.remove.length
+   ?`Reclaim ${best.remove.map(pos).join(' and ')}${reclaim.length?' in addition to the sphere(s) already reclaimed':''}, then finish your move.`
+   :'Finish your move now without reclaiming another sphere.';
+  $('analysis').innerHTML=`<b>Suggested reclaim choice</b><div style="margin-top:5px">${recommendation}</div><div style="margin-top:5px;color:#bdcfc3">Gold rings identify the suggested spheres. This compares the legal reclaim combinations using the local search engine; it is not a proven perfect-play result. You can choose a different sphere or finish whenever you wish.</div>`;
+  render();
+  $('note').textContent=recommendation;
+  return;
+ }
+ const m=choose(b,reserve,turn,'hard');if(m){action=m.type==='raise'?'raise':'place';source=m.type==='raise'?m.from:-1;hint=m.to;render();const reclaimText=m.remove?.length?` Recommended follow-up: reclaim ${m.remove.map(pos).join(' and ')}.`:m.bonus?' This creates a reclamation opportunity.':'';const why=m.type==='raise'?'This lifts a free sphere from a lower level, preserving your reserve.':m.bonus?'This completes a pattern that allows you to recover spheres.':'This is the search engine’s preferred placement based on its evaluation of the resulting position.';$('analysis').innerHTML=`<b>Suggested move: ${describe(m)}</b><div style="margin-top:5px">${why}${reclaimText}${m.repetitionCount?' Note: the search could not find a clearly better non-repeating continuation among the candidates examined.':''}</div><div style="margin-top:5px;color:#bdcfc3">Calculated by local search, not a perfect-play database. Gold marks the destination${m.type==='raise'?' and the selected sphere is the source':''}.</div>`;$('analysis').style.display='block';$('note').textContent=`Best move found: ${describe(m)}.`}};$('replayBtn').onclick=()=>victoryShow();
+$('resetDisplayBtn').onclick=()=>{stopVictory();if(!finalPosition)return;b=finalPosition.b.slice();reserve=finalPosition.r.slice();victoryPositions=[];render();$('endgameText').textContent='Final competitive position restored. Replay the illustrative winning placements if you wish.'};
+
+// Optional Firebase Realtime Database online rooms. Nothing loads from the network in offline mode.
+function onlineMessage(message){$('onlineStatus').textContent=message}
+function onlineView(){return {b:b.slice(),reserve:reserve.slice(),turn,variant,state,winner,history:history.slice(),lastMove:lastMove?{...lastMove}:null};}
+function applyOnlineView(remote){
+ if(!remote||!Array.isArray(remote.b)||remote.b.length!==30||!remote.b.every(v=>v===0||v===1||v===-1)||!Array.isArray(remote.reserve)||remote.reserve.length!==3||![1,-1].includes(remote.turn)||!['play','done'].includes(remote.state))return;
+ if(analysisActive){onlineLatest=remote;return;}
+ onlineApplying=true;stopVictory();snapshots=[];b=remote.b.slice();reserve=remote.reserve.slice();turn=remote.turn;variant=remote.variant||'advanced';$('variant').value=variant;$('variant').disabled=true;state=remote.state;winner=remote.winner||0;history=(remote.history||[]).slice();lastMove=remote.lastMove||null;pendingMove=null;reclaim=[];reclaimHint=[];source=-1;hint=-1;action='place';victoryPositions=[];finalPosition=state==='done'?{b:b.slice(),r:reserve.slice()}:null;mode='online';$('mode').value='online';$('endgame').style.display=state==='done'?'block':'none';$('analysis').style.display='none';render();onlineApplying=false;
+}
+let onlineLatest=null;
+async function onlineConnect(){
+ if(!navigator.onLine)throw Error('This device is offline. Connect to the internet first.');
+ if(location.protocol==='file:')throw Error('Online play requires the game to be hosted on HTTPS (not opened as a local file).');
+ const config=JSON.parse($('firebaseConfig').value);
+ if(!config.apiKey||!config.projectId||!config.appId||!config.databaseURL)throw Error('Firebase config needs apiKey, projectId, appId and databaseURL.');
+ if(!onlineSdk){
+  const [app,auth,database]=await Promise.all([
+   import('https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js'),
+   import('https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js'),
+   import('https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js')]);
+  onlineSdk={app,auth,database};
+ }
+ if(onlineDb&&!onlineUser)onlineDb=null;
+ if(!onlineDb){
+  const app=onlineSdk.app.getApps().find(a=>a.name==='pylos-rooms')||onlineSdk.app.initializeApp(config,'pylos-rooms');
+  onlineDb=onlineSdk.database.getDatabase(app,config.databaseURL);
+  const authentication=onlineSdk.auth.getAuth(app);
+  onlineUser=(await onlineSdk.auth.signInAnonymously(authentication)).user;
+ }
+ localStorage.setItem('pylos-firebase-config',JSON.stringify(config));
+ return onlineSdk.database;
+}
+function onlineSubscribe(ref){
+ if(onlineUnsub)onlineUnsub();onlineRef=ref;
+ onlineUnsub=onlineSdk.database.onValue(ref,snap=>{
+  const room=snap.val();
+  if(!room){onlineMessage('Room no longer exists.');return;}
+  onlineRevision=room.rev||0;
+  if(room.state){
+    if(!onlinePending)applyOnlineView(room.state);
+    else if(room.state.turn===onlineColor){/* local move still in progress */}
+  }
+  onlineMessage(`Room ${onlineCode} · ${room.guestUid?'Both players connected':'Waiting for your opponent'} · ${onlineRole==='host'?'Ivory':'Onyx'}`);
+ },error=>onlineMessage('Connection issue: '+error.message));
+}
+async function createOnlineRoom(){
+ try{
+  if(onlineJoined)throw Error('Leave your current room first.');
+  onlineMessage('Connecting to Firebase…');await onlineConnect();
+  // Random 8-character room code; host reserves this room atomically.
+  const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let roomRef,code,created=false;
+  for(let attempt=0;attempt<4&&!created;attempt++){
+    code=Array.from(crypto.getRandomValues(new Uint8Array(8)),n=>chars[n%chars.length]).join('');
+    roomRef=onlineSdk.database.ref(onlineDb,'rooms/'+code);
+    let tr=await onlineSdk.database.runTransaction(roomRef,current=>{
+      if(current!==null)return;
+      return {hostUid:onlineUser.uid,guestUid:'',rev:0,created:Date.now(),state:{b:Array(30).fill(0),reserve:[0,15,15],turn:1,variant:$('variant').value,state:'play',winner:0,history:[],lastMove:null}};
+    },{applyLocally:false});
+    created=tr.committed;
+  }
+  if(!created)throw Error('Could not reserve a unique room code. Try again.');
+  mode='online';$('mode').value='online';onlineJoined=true;onlineRole='host';onlineColor=1;onlineCode=code;onlineRevision=0;
+  $('roomCode').value=code;$('copyInviteBtn').disabled=false;$('leaveRoomBtn').disabled=false;
+  applyOnlineView({b:Array(30).fill(0),reserve:[0,15,15],turn:1,variant:$('variant').value,state:'play',winner:0,history:[],lastMove:null});
+  onlineSubscribe(roomRef);
+ }catch(e){onlineMessage('Could not create room: '+e.message);}
+}
+async function joinOnlineRoom(){
+ try{
+  if(onlineJoined)throw Error('Leave your current room first.');
+  let code=$('roomCode').value.toUpperCase().replace(/[^A-Z2-9]/g,'');
+  if(code.length!==8)throw Error('Enter an 8-character room code.');
+  onlineMessage('Joining room…');await onlineConnect();
+  const roomRef=onlineSdk.database.ref(onlineDb,'rooms/'+code);
+  const current=await onlineSdk.database.get(roomRef);
+  if(!current.exists())throw Error('Room not found. Check the code.');
+  let record=current.val(),role='guest';
+  if(record.hostUid===onlineUser.uid){role='host';}
+  else{
+    const tr=await onlineSdk.database.runTransaction(roomRef,room=>{
+      if(!room||!room.hostUid||(room.guestUid&&room.guestUid!==onlineUser.uid))return;
+      room.guestUid=onlineUser.uid;return room;
+    },{applyLocally:false});
+    if(!tr.committed)throw Error('Room already has two players.');
+    record=tr.snapshot.val();
+  }
+  mode='online';$('mode').value='online';onlineJoined=true;onlineRole=role;onlineColor=role==='host'?1:-1;onlineCode=code;onlineRevision=record.rev||0;
+  $('copyInviteBtn').disabled=false;$('leaveRoomBtn').disabled=false;applyOnlineView(record.state);onlineSubscribe(roomRef);
+ }catch(e){onlineMessage('Could not join: '+e.message);}
+}
+async function publishOnlineTurn(){
+ if(!onlineJoined||onlineApplying||analysisActive||state==='reclaim'||!onlineRef)return;
+ const next=onlineView();onlinePending=true;
+ try{
+  const tr=await onlineSdk.database.runTransaction(onlineRef,room=>{
+   if(!room||!room.guestUid||room.rev!==onlineRevision||!room.state||room.state.turn!==onlineColor)return;
+   if((onlineRole==='host'&&room.hostUid!==onlineUser.uid)||(onlineRole==='guest'&&room.guestUid!==onlineUser.uid))return;
+   room.rev++;room.state=next;return room;
+  },{applyLocally:false});
+  if(!tr.committed)throw Error('Move not accepted (the room may have changed).');
+  onlineRevision=tr.snapshot.val().rev;
+ }catch(e){onlineMessage('Move could not be sent: '+e.message+'. Reloading room position.');const snapshot=await onlineSdk.database.get(onlineRef).catch(()=>null);if(snapshot?.exists())applyOnlineView(snapshot.val().state);}
+ finally{onlinePending=false;}
+}
+async function leaveOnlineRoom(){
+ if(onlineUnsub)onlineUnsub();onlineUnsub=null;onlineJoined=false;onlineRef=null;onlineRole='';onlineCode='';onlineColor=0;onlinePending=false;
+ $('leaveRoomBtn').disabled=true;$('copyInviteBtn').disabled=true;onlineMessage('Disconnected from online room.');
+ mode='ai';$('mode').value='ai';$('onlinePanel').style.display='none';$('difficulty').disabled=false;$('side').disabled=false;$('variant').disabled=false;
+ render();
+}
+$('createRoomBtn').onclick=createOnlineRoom;
+$('joinRoomBtn').onclick=joinOnlineRoom;
+$('leaveRoomBtn').onclick=leaveOnlineRoom;
+$('copyInviteBtn').onclick=async()=>{if(!onlineCode)return;const u=new URL(location.href);u.searchParams.set('room',onlineCode);try{await navigator.clipboard.writeText(u.href);onlineMessage('Invite link copied. Send it to the other player.')}catch(e){onlineMessage('Share this website address and room code '+onlineCode)}};
+try{
+ const configured=window.PYLOS_FIREBASE_CONFIG;
+ const isReady=configured&&configured.apiKey&&configured.projectId&&configured.appId&&configured.databaseURL;
+ $('firebaseConfig').value=isReady?JSON.stringify(configured,null,2):(localStorage.getItem('pylos-firebase-config')||'');
+ const invite=new URLSearchParams(location.search).get('room');if(invite)$('roomCode').value=invite.toUpperCase().slice(0,8);
+}catch(e){}
+$('mode').onchange=()=>{const next=$('mode').value;if(onlineJoined&&next!=='online')void leaveOnlineRoom();mode=next;$('difficulty').disabled=next!=='ai';$('side').disabled=next!=='ai';$('onlinePanel').style.display=next==='online'?'block':'none';render()};$('boardTheme').onchange=()=>{boardTheme=['classic','wood'].includes($('boardTheme').value)?$('boardTheme').value:'classic';applyBoardTheme();render()};if(!restoreGame())start();
+})();
+</script>
+<script>
+if ('serviceWorker' in navigator && (location.protocol==='https:' || location.hostname==='localhost')) {
+  window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+}
+</script>
+</body></html>
