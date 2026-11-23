@@ -556,7 +556,7 @@ function applyOnlineView(remote){
  if(analysisActive){onlineLatest=remote;return;}
  onlineApplying=true;stopVictory();snapshots=[];b=remote.b.slice();reserve=remote.reserve.slice();turn=remote.turn;variant=remote.variant||'advanced';$('variant').value=variant;$('variant').disabled=true;state=remote.state;winner=remote.winner||0;history=(remote.history||[]).slice();lastMove=remote.lastMove||null;pendingMove=null;reclaim=[];reclaimHint=[];source=-1;hint=-1;action='place';victoryPositions=[];finalPosition=state==='done'?{b:b.slice(),r:reserve.slice()}:null;mode='online';$('mode').value='online';$('endgame').style.display=state==='done'?'block':'none';$('analysis').style.display='none';render();onlineApplying=false;
 }
-let onlineLatest=null;
+let onlineLatest=null,onlineRoomData=null;
 async function onlineConnect(){
  if(!navigator.onLine)throw Error('This device is offline. Connect to the internet first.');
  if(location.protocol==='file:')throw Error('Online play requires the game to be hosted on HTTPS (not opened as a local file).');
@@ -586,7 +586,7 @@ function onlineSubscribe(ref){
  onlineUnsub=onlineSdk.database.onValue(ref,snap=>{
   const room=snap.val();
   if(!room){onlineMessage('Room no longer exists.');return;}
-  onlineRevision=room.rev||0;
+  onlineRevision=room.rev||0;onlineRoomData=room;
   if(room.state){
     if(!onlinePending)applyOnlineView(room.state);
     else if(room.state.turn===onlineColor){/* local move still in progress */}
@@ -628,12 +628,24 @@ async function joinOnlineRoom(){
   let record=current.val(),role='guest';
   if(record.hostUid===onlineUser.uid){role='host';}
   else{
-    const tr=await onlineSdk.database.runTransaction(roomRef,room=>{
-      if(!room||!room.hostUid||(room.guestUid&&room.guestUid!==onlineUser.uid))return;
-      room.guestUid=onlineUser.uid;return room;
+    // Do not transact the whole room: Firebase may initially call the update
+    // function with null even after get() found an existing remote room.
+    // A null whole-room value used to abort with the misleading "two players" error.
+    if(record.guestUid && record.guestUid!==onlineUser.uid)
+      throw Error('This room already has two players. Ask the host for a fresh code.');
+    const guestSlotRef=onlineSdk.database.ref(onlineDb,'rooms/'+code+'/guestUid');
+    const tr=await onlineSdk.database.runTransaction(guestSlotRef,previous=>{
+      // Only reserve the guest slot; never rewrite/erase the rest of the room.
+      // A temporarily uncached null is safe here: the server compares the value
+      // and will retry if a different user claimed it first.
+      if(previous===null||previous===''||previous===onlineUser.uid)return onlineUser.uid;
+      return; // A genuinely occupied guest slot: do not overwrite it.
     },{applyLocally:false});
-    if(!tr.committed)throw Error('Room already has two players.');
-    record=tr.snapshot.val();
+    if(!tr.committed)throw Error('This room already has two players.');
+    const joined=await onlineSdk.database.get(roomRef);
+    if(!joined.exists()||joined.val().guestUid!==onlineUser.uid)
+      throw Error('Could not verify the room membership. Try joining again.');
+    record=joined.val();
   }
   mode='online';$('mode').value='online';onlineJoined=true;onlineRole=role;onlineColor=role==='host'?1:-1;onlineCode=code;onlineRevision=record.rev||0;
   $('copyInviteBtn').disabled=false;$('leaveRoomBtn').disabled=false;applyOnlineView(record.state);onlineSubscribe(roomRef);
@@ -643,10 +655,14 @@ async function publishOnlineTurn(){
  if(!onlineJoined||onlineApplying||analysisActive||state==='reclaim'||!onlineRef)return;
  const next=onlineView();onlinePending=true;
  try{
-  const tr=await onlineSdk.database.runTransaction(onlineRef,room=>{
+  const tr=await onlineSdk.database.runTransaction(onlineRef,current=>{
+   // Transactions can start with null when the remote value is not locally cached.
+   // Use the most recent subscribed room as an optimistic starting value;
+   // Firebase will retry against the true server value if it differs.
+   const room=current||onlineRoomData;
    if(!room||!room.guestUid||room.rev!==onlineRevision||!room.state||room.state.turn!==onlineColor)return;
    if((onlineRole==='host'&&room.hostUid!==onlineUser.uid)||(onlineRole==='guest'&&room.guestUid!==onlineUser.uid))return;
-   room.rev++;room.state=next;return room;
+   return {...room,rev:room.rev+1,state:next};
   },{applyLocally:false});
   if(!tr.committed)throw Error('Move not accepted (the room may have changed).');
   onlineRevision=tr.snapshot.val().rev;
@@ -654,7 +670,7 @@ async function publishOnlineTurn(){
  finally{onlinePending=false;}
 }
 async function leaveOnlineRoom(){
- if(onlineUnsub)onlineUnsub();onlineUnsub=null;onlineJoined=false;onlineRef=null;onlineRole='';onlineCode='';onlineColor=0;onlinePending=false;
+ if(onlineUnsub)onlineUnsub();onlineUnsub=null;onlineJoined=false;onlineRef=null;onlineRoomData=null;onlineRole='';onlineCode='';onlineColor=0;onlinePending=false;
  $('leaveRoomBtn').disabled=true;$('copyInviteBtn').disabled=true;onlineMessage('Disconnected from online room.');
  mode='ai';$('mode').value='ai';$('onlinePanel').style.display='none';$('difficulty').disabled=false;$('side').disabled=false;$('variant').disabled=false;
  render();
