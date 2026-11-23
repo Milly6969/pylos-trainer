@@ -1,4 +1,4 @@
-const CACHE = 'pylos-trainer-v29-room-rematches-history';
+const CACHE = 'pylos-trainer-v30-clean-board-hollows';
 const STATIC = ['./','./index.html','./manifest.webmanifest','./icons/icon-192.png','./icons/icon-512.png','./icons/icon-maskable-512.png','./icons/apple-touch-icon.png','./icons/favicon-64.png','./assets/wood-board.png','./assets/ivory-sphere.png','./assets/onyx-sphere.png'];
 self.addEventListener('install', event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(STATIC)).then(()=>self.skipWaiting()));
